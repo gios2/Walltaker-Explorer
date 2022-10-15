@@ -70,6 +70,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+  <component name="PropertiesComponent">
+    <property name="ApkExportedModule" value="Walltaker_Explorer.app" />
+    <property name="ExportApk.ApkPath" value="C:\Users\giozg\AndroidStudioProjects\WalltakerExplorer\app" />
+    <property name="ExportApk.BuildVariants" value="release" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="cidr.known.project.marker" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="android.template.548549579">
       <recent name="com.gios.walltakerexplorer" />

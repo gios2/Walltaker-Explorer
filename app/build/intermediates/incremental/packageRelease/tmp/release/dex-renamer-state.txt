@@ -1,4 +1,4 @@
-#Sat Oct 15 19:41:19 CEST 2022
+#Sat Oct 15 21:33:05 CEST 2022
 base.0=C\:\\Users\\giozg\\AndroidStudioProjects\\WalltakerExplorer\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex
