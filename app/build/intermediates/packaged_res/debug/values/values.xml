@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="ic_launcher_background">@color/walltaker</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="walltaker">#FFB300</color>
+    <color name="walltakerLight">#0D47A1</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="action_Back">Exit Center</string>
+    <string name="action_Center">Center</string>
+    <string name="action_Download">Download</string>
+    <string name="app_name">Walltaker Explorer</string>
+    <style name="Theme.WalltakerExplorer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+
+
+        
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:titleTextStyle">@color/walltaker</item>
+
+        
+    </style>
+</resources>
