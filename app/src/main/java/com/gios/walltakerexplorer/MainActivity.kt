@@ -23,13 +23,14 @@ import androidx.core.view.isVisible
 import com.squareup.picasso.Picasso
 
 
-lateinit var postUrl: String
+lateinit var webUrl: String
 lateinit var uri: Uri
 lateinit var DI: String
 
 @SuppressLint("StaticFieldLeak")
 lateinit var webView: WebView
-const val url = "https://walltaker.joi.how/"
+var url = "https://walltaker.joi.how/"
+
 @SuppressLint("StaticFieldLeak")
 lateinit var photo: ImageView
 
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         if (isDarkThemeOn()) {
             this.supportActionBar!!.title =
                 Html.fromHtml("<font color='#FFB300'>Walltaker Explorer</font>")
@@ -51,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
         webView.loadUrl(url)
-
     }
 
     private fun Context.isDarkThemeOn(): Boolean {
@@ -60,8 +61,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun image() {
-        if (postUrl.contains("static1.e621.net")) {
-            downloadFile(postUrl)
+        if (webUrl.contains("static1.e621.net")) {
+            downloadFile(webUrl)
             Toast.makeText(this, "download $uri", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "this isn’t a image or video", Toast.LENGTH_SHORT).show()
@@ -79,16 +80,21 @@ class MainActivity : AppCompatActivity() {
         downloadManager.enqueue(request)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        url = webView.url!!
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.action_Download -> {
-            postUrl = webView.url!!
+            webUrl = webView.url!!
             image()
             true
         }
         R.id.action_Center -> {
-            postUrl = webView.url!!
-            if (postUrl.contains("static1.e621.net")) {
-                Picasso.get().load(postUrl).into(photo)
+            webUrl = webView.url!!
+            if (webUrl.contains("static1.e621.net")) {
+                Picasso.get().load(webUrl).into(photo)
                 photo.visibility = View.VISIBLE
                 webView.visibility = View.INVISIBLE
             } else {
@@ -100,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             if (photo.isVisible) {
                 photo.visibility = View.INVISIBLE
                 webView.visibility = View.VISIBLE
-            }else{
+            } else {
                 Toast.makeText(this, "cannot perform this", Toast.LENGTH_SHORT).show()
             }
             true
