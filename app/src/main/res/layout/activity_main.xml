@@ -39,7 +39,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="invisible"
-        app:srcCompat="@drawable/ic_launcher_foreground"
         android:contentDescription="TODO" />
 
 
