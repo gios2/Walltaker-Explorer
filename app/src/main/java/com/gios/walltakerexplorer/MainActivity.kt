@@ -20,7 +20,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 
 
 lateinit var webUrl: String
@@ -53,11 +53,11 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
         webView.loadUrl(url)
+
     }
 
     private fun Context.isDarkThemeOn(): Boolean {
-        return resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK == UI_MODE_NIGHT_YES
+        return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == UI_MODE_NIGHT_YES
     }
 
     private fun image() {
@@ -93,37 +93,41 @@ class MainActivity : AppCompatActivity() {
         }
         R.id.action_Center -> {
             webUrl = webView.url!!
-            if (webUrl.contains("static1.e621.net")) {
-                Picasso.get().load(webUrl).into(photo)
+            if (webUrl.endsWith(".webm")) {
+                Toast.makeText(this, "This doesn't work with videos", Toast.LENGTH_SHORT).show()
+            } else if (webUrl.contains("static1.e621.net")) {
+                Glide.with(this).load(webUrl).into(photo)
                 photo.visibility = View.VISIBLE
                 webView.visibility = View.INVISIBLE
+
             } else {
-                Toast.makeText(this, "this isn’t a image or video", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "This isn’t a image", Toast.LENGTH_SHORT).show()
             }
             true
         }
-        R.id.action_Back -> {
-            if (photo.isVisible) {
-                photo.visibility = View.INVISIBLE
-                webView.visibility = View.VISIBLE
-            } else {
-                Toast.makeText(this, "cannot perform this", Toast.LENGTH_SHORT).show()
-            }
+        R.id.action_update -> {
+            webView.reload()
             true
         }
         else -> {
-
             super.onOptionsItemSelected(item)
         }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
+
+    @Deprecated("Deprecated in Java", replaceWith = ReplaceWith(""))
     override fun onBackPressed() {
+        if (photo.isVisible) {
+            photo.visibility = View.INVISIBLE
+            webView.visibility = View.VISIBLE
+            this.cacheDir.deleteRecursively()
+            Glide.get(this).clearMemory()
+        }
         if (webView.canGoBack()) {
             webView.goBack()
         } else {
