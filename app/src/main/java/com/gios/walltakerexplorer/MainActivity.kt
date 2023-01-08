@@ -14,6 +14,7 @@ import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
@@ -52,6 +53,13 @@ class MainActivity : AppCompatActivity() {
         webView = findViewById(R.id.Explorer)
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
+        // speeding page loading
+        webView.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
+        webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
+        webView.settings.domStorageEnabled = true
+        webView.settings.useWideViewPort = true
+        webView.settings.enableSmoothTransition()
+
         webView.loadUrl(url)
 
     }
