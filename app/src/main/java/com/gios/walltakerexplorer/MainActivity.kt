@@ -10,6 +10,8 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
@@ -22,6 +24,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.github.kittinunf.fuel.httpGet
+import com.google.gson.GsonBuilder
+import com.google.gson.internal.LinkedTreeMap
 
 
 lateinit var webUrl: String
@@ -35,7 +40,10 @@ var url = "https://walltaker.joi.how/"
 @SuppressLint("StaticFieldLeak")
 lateinit var photo: ImageView
 
+
 class MainActivity : AppCompatActivity() {
+    private lateinit var menu: Menu
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,11 +63,10 @@ class MainActivity : AppCompatActivity() {
         webView.settings.javaScriptEnabled = true
         // speeding page loading
         webView.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
-        webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
         webView.settings.domStorageEnabled = true
         webView.settings.useWideViewPort = true
         webView.settings.enableSmoothTransition()
-
+        api()
         webView.loadUrl(url)
 
     }
@@ -99,6 +106,7 @@ class MainActivity : AppCompatActivity() {
             image()
             true
         }
+
         R.id.action_Center -> {
             webUrl = webView.url!!
             if (webUrl.endsWith(".webm")) {
@@ -113,20 +121,48 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        R.id.action_home -> {
+            webView.loadUrl(url)
+            true
+        }
+
         R.id.action_update -> {
+            api()
             webView.reload()
             true
         }
+
         else -> {
             super.onOptionsItemSelected(item)
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        this.menu = menu
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
+    private fun api() {
+        "https://status.e621.ws/json".httpGet().header("User-Agent" to "Walltaker-Explorer")
+            .responseString { _, response, result ->
+            val item = menu.findItem(R.id.action_update)
+            if (response.statusCode == 200) {
+                val gson = GsonBuilder().create()
+                val data = gson.fromJson(result.get(), Current::class.java)
+                val current = data.current
+                val handler = Handler(Looper.getMainLooper())
+                handler.post {
+                    if (current["state"] == "up") {
+                        item.setIcon(R.drawable.green)
+                    } else {
+                        item.setIcon(R.drawable.red)
+                    }
+                }
+            }
+        }
+    }
 
     @Deprecated("Deprecated in Java", replaceWith = ReplaceWith(""))
     override fun onBackPressed() {
@@ -143,3 +179,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+class Current(
+    var current: LinkedTreeMap<String, Any>
+)

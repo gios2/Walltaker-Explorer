@@ -4,13 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.gios.myapplication.MainActivity">
     <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/home"
+        android:orderInCategory="1"
+        android:title="@string/action_home"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_update"
         android:icon="@drawable/ic_baseline_cached_24"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="@string/action_update"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_menu"
         android:icon="@drawable/ic_baseline_menu_24"
         android:orderInCategory="3"
         android:title="@string/menu"

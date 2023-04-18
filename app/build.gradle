@@ -12,7 +12,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 1
-        versionName "0.4"
+        versionName '0.5.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,11 +34,13 @@ android {
 
 dependencies {
 
-    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'com.github.kittinunf.fuel:fuel:2.3.1'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
     implementation 'androidx.preference:preference:1.2.0'
