@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         R.id.action_home -> {
-            webView.loadUrl(url)
+            webView.loadUrl("https://walltaker.joi.how/")
             true
         }
 
