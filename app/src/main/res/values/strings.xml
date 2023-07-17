@@ -5,5 +5,6 @@
     <string name="action_home">Home</string>
     <string name="action_update" />
     <string name="menu">menu</string>
+    <string name="search_on_e621">Search on E621</string>
 
 </resources>

@@ -133,6 +133,20 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+        R.id.action_search -> {
+            webUrl = webView.url!!
+            if (webUrl.contains("static1.e621.net")) {
+                webView.loadUrl(
+                    "https://e621.net/posts?tags=md5%3A${
+                        webUrl.split("/").last().split(".").first()
+                    }"
+                )
+            } else {
+                Toast.makeText(this, "This isn’t a image", Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
+
         else -> {
             super.onOptionsItemSelected(item)
         }
@@ -147,21 +161,21 @@ class MainActivity : AppCompatActivity() {
     private fun api() {
         "https://status.e621.ws/json".httpGet().header("User-Agent" to "Walltaker-Explorer")
             .responseString { _, response, result ->
-            val item = menu.findItem(R.id.action_update)
-            if (response.statusCode == 200) {
-                val gson = GsonBuilder().create()
-                val data = gson.fromJson(result.get(), Current::class.java)
-                val current = data.current
-                val handler = Handler(Looper.getMainLooper())
-                handler.post {
-                    if (current["state"] == "up") {
-                        item.setIcon(R.drawable.green)
-                    } else {
-                        item.setIcon(R.drawable.red)
+                val item = menu.findItem(R.id.action_update)
+                if (response.statusCode == 200) {
+                    val gson = GsonBuilder().create()
+                    val data = gson.fromJson(result.get(), Current::class.java)
+                    val current = data.current
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.post {
+                        if (current["state"] == "up") {
+                            item.setIcon(R.drawable.green)
+                        } else {
+                            item.setIcon(R.drawable.red)
+                        }
                     }
                 }
             }
-        }
     }
 
     @Deprecated("Deprecated in Java", replaceWith = ReplaceWith(""))
