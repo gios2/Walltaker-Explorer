@@ -58,13 +58,10 @@ class MainActivity : AppCompatActivity() {
                 Html.fromHtml("<font color='#0D47A1'>Walltaker Explorer</font>")
         }
 
-        val url = "https://github.com/Piashsarker/AndroidAppUpdateLibrary/raw/master/app-debug.apk"
+        val url = "https://github.com/gios2/Walltaker-Explorer/raw/main/app/release/app-release.apk"
 
         val downloadApk = DownloadApk(this@MainActivity)
 
-// With standard fileName 'App Update.apk'
-
-// With standard fileName 'App Update.apk'
         downloadApk.startDownloadingApk(url)
 
         photo = findViewById(R.id.Photo)
