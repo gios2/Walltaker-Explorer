@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.dcastalia.localappupdate.DownloadApk
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.GsonBuilder
 import com.google.gson.internal.LinkedTreeMap
@@ -56,6 +57,15 @@ class MainActivity : AppCompatActivity() {
             this.supportActionBar!!.title =
                 Html.fromHtml("<font color='#0D47A1'>Walltaker Explorer</font>")
         }
+
+        val url = "https://github.com/Piashsarker/AndroidAppUpdateLibrary/raw/master/app-debug.apk"
+
+        val downloadApk = DownloadApk(this@MainActivity)
+
+// With standard fileName 'App Update.apk'
+
+// With standard fileName 'App Update.apk'
+        downloadApk.startDownloadingApk(url)
 
         photo = findViewById(R.id.Photo)
         webView = findViewById(R.id.Explorer)
