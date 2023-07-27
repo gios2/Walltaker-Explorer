@@ -58,12 +58,6 @@ class MainActivity : AppCompatActivity() {
                 Html.fromHtml("<font color='#0D47A1'>Walltaker Explorer</font>")
         }
 
-        val url = "https://github.com/gios2/Walltaker-Explorer/raw/main/app/release/app-release.apk"
-
-        val downloadApk = DownloadApk(this@MainActivity)
-
-        downloadApk.startDownloadingApk(url)
-
         photo = findViewById(R.id.Photo)
         webView = findViewById(R.id.Explorer)
         webView.webViewClient = WebViewClient()
@@ -130,7 +124,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         R.id.action_home -> {
-            webView.loadUrl("https://walltaker.joi.how/")
+            val url = "https://github.com/gios2/Walltaker-Explorer/raw/main/app/release/app-release.apk"
+
+            val downloadApk = DownloadApk(this@MainActivity)
+
+            downloadApk.startDownloadingApk(url)
+            //webView.loadUrl("https://walltaker.joi.how/")
             true
         }
 
