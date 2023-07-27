@@ -5,6 +5,7 @@ package com.gios.walltakerexplorer
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.net.Uri
@@ -21,7 +22,9 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.dcastalia.localappupdate.DownloadApk
@@ -50,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        storagePerm()
+
         if (isDarkThemeOn()) {
             this.supportActionBar!!.title =
                 Html.fromHtml("<font color='#FFB300'>Walltaker Explorer</font>")
@@ -71,6 +76,26 @@ class MainActivity : AppCompatActivity() {
         webView.loadUrl(url)
 
     }
+
+    private fun storagePerm() {
+
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+
+
+            val requestPermissionLauncher = registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { _: Boolean ->
+
+            }
+            requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+    }
+
 
     private fun Context.isDarkThemeOn(): Boolean {
         return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == UI_MODE_NIGHT_YES
@@ -124,12 +149,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         R.id.action_home -> {
-            val url = "https://github.com/gios2/Walltaker-Explorer/raw/main/app/release/app-release.apk"
-
-            val downloadApk = DownloadApk(this@MainActivity)
-
-            downloadApk.startDownloadingApk(url)
-            //webView.loadUrl("https://walltaker.joi.how/")
+            webView.loadUrl("https://walltaker.joi.how/")
             true
         }
 
@@ -152,6 +172,15 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        R.id.action_upApp -> {
+            val url =
+                "https://github.com/gios2/Walltaker-Explorer/raw/main/app/release/app-release.apk"
+            val downloadApk = DownloadApk(this@MainActivity)
+            downloadApk.startDownloadingApk(url)
+            true
+        }
+
         else -> {
             super.onOptionsItemSelected(item)
         }
