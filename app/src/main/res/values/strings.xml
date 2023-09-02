@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Walltaker Explorer</string>
+    <string name="app_name">WT Explorer</string>
     <string name="action_Download">Download</string>
     <string name="action_Center">Center</string>
     <string name="action_home">Home</string>
