@@ -31,7 +31,7 @@ import com.dcastalia.localappupdate.DownloadApk
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.GsonBuilder
 import com.google.gson.internal.LinkedTreeMap
-
+import org.jsoup.Jsoup
 
 lateinit var webUrl: String
 lateinit var uri: Uri
@@ -44,6 +44,7 @@ var url = "https://walltaker.joi.how/"
 @SuppressLint("StaticFieldLeak")
 lateinit var photo: ImageView
 
+val links = mutableListOf<String>()
 
 class MainActivity : AppCompatActivity() {
     private lateinit var menu: Menu
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         storagePerm()
-
+        api()
         if (isDarkThemeOn()) {
             this.supportActionBar!!.title =
                 Html.fromHtml("<font color='#FFB300'>Walltaker Explorer</font>")
@@ -69,24 +70,21 @@ class MainActivity : AppCompatActivity() {
         webView.settings.javaScriptEnabled = true
         // speeding page loading
         webView.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
+        webView.settings.cacheMode=WebSettings.LOAD_CACHE_ELSE_NETWORK
         webView.settings.domStorageEnabled = true
         webView.settings.useWideViewPort = true
         webView.settings.enableSmoothTransition()
-        api()
         webView.loadUrl(url)
+
 
     }
 
     private fun storagePerm() {
-
-
         if (ContextCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-
-
             val requestPermissionLauncher = registerForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { _: Boolean ->
@@ -99,6 +97,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun Context.isDarkThemeOn(): Boolean {
         return resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == UI_MODE_NIGHT_YES
+    }
+
+    private fun rand() {
+        "https://walltaker.joi.how/browse".httpGet()
+            .responseString { _, response, result ->
+                if (response.statusCode == 200) {
+                    val id = Jsoup.parse(result.toString()).getElementsByClass("link")
+                    for (x in id) {
+                        links.add(x.attr("data-feed-number"))
+                    }
+                    val ran = links.random()
+                    webView.post {
+                        webView.loadUrl("https://walltaker.joi.how/links/$ran")
+                    }
+
+                }
+            }
     }
 
     private fun image() {
@@ -141,7 +156,6 @@ class MainActivity : AppCompatActivity() {
                 Glide.with(this).load(webUrl).into(photo)
                 photo.visibility = View.VISIBLE
                 webView.visibility = View.INVISIBLE
-
             } else {
                 Toast.makeText(this, "This isn’t a image", Toast.LENGTH_SHORT).show()
             }
@@ -156,6 +170,10 @@ class MainActivity : AppCompatActivity() {
         R.id.action_update -> {
             api()
             webView.reload()
+            true
+        }
+        R.id.action_random ->{
+            rand()
             true
         }
 
