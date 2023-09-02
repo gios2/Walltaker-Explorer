@@ -70,7 +70,6 @@ class MainActivity : AppCompatActivity() {
         webView.settings.javaScriptEnabled = true
         // speeding page loading
         webView.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
-        webView.settings.cacheMode=WebSettings.LOAD_CACHE_ELSE_NETWORK
         webView.settings.domStorageEnabled = true
         webView.settings.useWideViewPort = true
         webView.settings.enableSmoothTransition()
