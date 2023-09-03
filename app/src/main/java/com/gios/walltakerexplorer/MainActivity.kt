@@ -31,7 +31,8 @@ import com.dcastalia.localappupdate.DownloadApk
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.GsonBuilder
 import com.google.gson.internal.LinkedTreeMap
-import org.jsoup.Jsoup
+import org.json.JSONArray
+import kotlin.random.Random
 
 lateinit var webUrl: String
 lateinit var uri: Uri
@@ -43,8 +44,6 @@ var url = "https://walltaker.joi.how/"
 
 @SuppressLint("StaticFieldLeak")
 lateinit var photo: ImageView
-
-val links = mutableListOf<String>()
 
 class MainActivity : AppCompatActivity() {
     private lateinit var menu: Menu
@@ -99,18 +98,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun rand() {
-        "https://walltaker.joi.how/browse".httpGet()
+        val link =
+            "https://walltaker.joi.how/api/links.json?online"
+        link.httpGet().header("User-Agent" to "Walltaker Explorer")
             .responseString { _, response, result ->
                 if (response.statusCode == 200) {
-                    val id = Jsoup.parse(result.toString()).getElementsByClass("link")
-                    for (x in id) {
-                        links.add(x.attr("data-feed-number"))
-                    }
-                    val ran = links.random()
+                    val jsonArray = JSONArray(result.get())
+                    //get a random link
+                    val ran =
+                        jsonArray
+                            .getJSONObject(Random.nextInt(jsonArray.length()))
+                            .getInt("id")
                     webView.post {
                         webView.loadUrl("https://walltaker.joi.how/links/$ran")
                     }
-
                 }
             }
     }
@@ -171,7 +172,8 @@ class MainActivity : AppCompatActivity() {
             webView.reload()
             true
         }
-        R.id.action_random ->{
+
+        R.id.action_random -> {
             rand()
             true
         }
