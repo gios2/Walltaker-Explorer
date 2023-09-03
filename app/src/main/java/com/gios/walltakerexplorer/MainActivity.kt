@@ -58,10 +58,10 @@ class MainActivity : AppCompatActivity() {
         api()
         if (isDarkThemeOn()) {
             this.supportActionBar!!.title =
-                Html.fromHtml("<font color='#FFB300'>WT Explorer</font>")
+                Html.fromHtml("<font color='#FFB300'>Walltaker Explorer</font>")
         } else {
             this.supportActionBar!!.title =
-                Html.fromHtml("<font color='#0D47A1'>WT Explorer</font>")
+                Html.fromHtml("<font color='#0D47A1'>Walltaker Explorer</font>")
         }
 
         photo = findViewById(R.id.Photo)
