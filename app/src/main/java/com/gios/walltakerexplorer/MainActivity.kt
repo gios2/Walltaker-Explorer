@@ -1,4 +1,5 @@
 @file:Suppress("DEPRECATION")
+@file:SuppressLint("StaticFieldLeak")
 
 package com.gios.walltakerexplorer
 
@@ -12,7 +13,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.os.Looper
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
@@ -26,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.dcastalia.localappupdate.DownloadApk
 import com.github.kittinunf.fuel.httpGet
@@ -34,16 +35,16 @@ import com.google.gson.internal.LinkedTreeMap
 import org.json.JSONArray
 import kotlin.random.Random
 
+
 lateinit var webUrl: String
 lateinit var uri: Uri
 lateinit var DI: String
 
-@SuppressLint("StaticFieldLeak")
 lateinit var webView: WebView
 var url = "https://walltaker.joi.how/"
 
-@SuppressLint("StaticFieldLeak")
 lateinit var photo: ImageView
+lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
 class MainActivity : AppCompatActivity() {
     private lateinit var menu: Menu
@@ -54,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         storagePerm()
-        api()
         if (isDarkThemeOn()) {
             this.supportActionBar!!.title =
                 Html.fromHtml("<font color='#FFB300'>Walltaker Explorer</font>")
@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         photo = findViewById(R.id.Photo)
         webView = findViewById(R.id.Explorer)
+        swipeRefreshLayout = findViewById(R.id.swipe)
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
         // speeding page loading
@@ -73,8 +74,15 @@ class MainActivity : AppCompatActivity() {
         webView.settings.useWideViewPort = true
         webView.settings.enableSmoothTransition()
         webView.loadUrl(url)
+        api()
 
-
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = true
+            Handler().postDelayed({
+                swipeRefreshLayout.isRefreshing = false
+                webView.reload()
+            }, 500)
+        }
     }
 
     private fun storagePerm() {
@@ -86,7 +94,6 @@ class MainActivity : AppCompatActivity() {
             val requestPermissionLauncher = registerForActivityResult(
                 ActivityResultContracts.RequestPermission()
             ) { _: Boolean ->
-
             }
             requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
@@ -214,13 +221,12 @@ class MainActivity : AppCompatActivity() {
     private fun api() {
         "https://status.e621.ws/json".httpGet().header("User-Agent" to "Walltaker-Explorer")
             .responseString { _, response, result ->
-                val item = menu.findItem(R.id.action_update)
+                val item = menu.findItem(R.id.action_home)
                 if (response.statusCode == 200) {
                     val gson = GsonBuilder().create()
                     val data = gson.fromJson(result.get(), Current::class.java)
                     val current = data.current
-                    val handler = Handler(Looper.getMainLooper())
-                    handler.post {
+                    runOnUiThread {
                         if (current["state"] == "up") {
                             item.setIcon(R.drawable.green)
                         } else {
