@@ -14,3 +14,7 @@ Reload = reload current tab.
 Download = click when you have opened an image or video to download it.
 
 Center = allows you to center images and gif, doesn’t work with videos.
+
+If you want to send me a tip:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/gios2)
