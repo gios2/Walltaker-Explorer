@@ -47,15 +47,6 @@
                 android:orderInCategory="100"
                 android:title="@string/search_on_e621"
                 app:showAsAction="never" />
-            <item
-                android:checkable="false"
-                android:orderInCategory="100"
-                android:title="" />
-            <item
-                android:title="@string/update_app"
-                android:id="@id/action_upApp"
-                android:orderInCategory="100"
-                app:showAsAction="never" />
             />
         </menu>
     </item>

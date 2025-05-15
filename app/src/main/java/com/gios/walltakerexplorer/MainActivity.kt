@@ -1,4 +1,3 @@
-@file:Suppress("DEPRECATION")
 @file:SuppressLint("StaticFieldLeak")
 
 package com.gios.walltakerexplorer
@@ -13,11 +12,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.text.Html
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ImageView
@@ -25,13 +23,13 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
-import com.dcastalia.localappupdate.DownloadApk
 import com.github.kittinunf.fuel.httpGet
-import com.google.gson.GsonBuilder
-import com.google.gson.internal.LinkedTreeMap
+import com.google.android.material.appbar.MaterialToolbar
 import org.json.JSONArray
 import kotlin.random.Random
 
@@ -40,6 +38,7 @@ lateinit var webUrl: String
 lateinit var uri: Uri
 lateinit var DI: String
 
+@SuppressLint("StaticFieldLeak")
 lateinit var webView: WebView
 var url = "https://walltaker.joi.how/"
 
@@ -54,13 +53,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val topAppBar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(topAppBar)
+
         storagePerm()
         if (isDarkThemeOn()) {
             this.supportActionBar!!.title =
-                Html.fromHtml("<font color='#FFB300'>Walltaker Explorer</font>")
+                HtmlCompat.fromHtml(
+                    "<font color='#FFB300'>Walltaker Explorer</font>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
         } else {
             this.supportActionBar!!.title =
-                Html.fromHtml("<font color='#0D47A1'>Walltaker Explorer</font>")
+                HtmlCompat.fromHtml(
+                    "<font color='#0D47A1'>Walltaker Explorer</font>",
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
         }
 
         photo = findViewById(R.id.Photo)
@@ -69,16 +77,13 @@ class MainActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
         webView.settings.javaScriptEnabled = true
         // speeding page loading
-        webView.settings.setRenderPriority(WebSettings.RenderPriority.HIGH)
         webView.settings.domStorageEnabled = true
         webView.settings.useWideViewPort = true
-        webView.settings.enableSmoothTransition()
         webView.loadUrl(url)
-        api()
 
         swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshLayout.isRefreshing = true
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 swipeRefreshLayout.isRefreshing = false
                 webView.reload()
             }, 500)
@@ -134,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun downloadFile(url: String) {
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        uri = Uri.parse(url)
+        uri = url.toUri()
         DI = uri.lastPathSegment.toString()
         val request = DownloadManager.Request(uri)
         request.setTitle("Download $uri")
@@ -171,11 +176,11 @@ class MainActivity : AppCompatActivity() {
 
         R.id.action_home -> {
             webView.loadUrl("https://walltaker.joi.how/")
+            photo.visibility = View.INVISIBLE
             true
         }
 
         R.id.action_update -> {
-            api()
             webView.reload()
             true
         }
@@ -199,14 +204,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        R.id.action_upApp -> {
-            val url =
-                "https://github.com/gios2/Walltaker-Explorer/raw/main/app/release/app-release.apk"
-            val downloadApk = DownloadApk(this@MainActivity)
-            downloadApk.startDownloadingApk(url)
-            true
-        }
-
         else -> {
             super.onOptionsItemSelected(item)
         }
@@ -218,26 +215,8 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun api() {
-        "https://status.e621.ws/json".httpGet().header("User-Agent" to "Walltaker-Explorer")
-            .responseString { _, response, result ->
-                val item = menu.findItem(R.id.action_home)
-                if (response.statusCode == 200) {
-                    val gson = GsonBuilder().create()
-                    val data = gson.fromJson(result.get(), Current::class.java)
-                    val current = data.current
-                    runOnUiThread {
-                        if (current["state"] == "up") {
-                            item.setIcon(R.drawable.green)
-                        } else {
-                            item.setIcon(R.drawable.red)
-                        }
-                    }
-                }
-            }
-    }
-
-    @Deprecated("Deprecated in Java", replaceWith = ReplaceWith(""))
+    @Deprecated("Deprecated in Java")
+    @Suppress("DEPRECATION")
     override fun onBackPressed() {
         if (photo.isVisible) {
             photo.visibility = View.INVISIBLE
@@ -251,8 +230,3 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
         }
     }
-}
-
-class Current(
-    var current: LinkedTreeMap<String, Any>
-)
